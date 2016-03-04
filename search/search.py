@@ -20,6 +20,7 @@ Pacman agents (in searchAgents.py).
 import util
 from util import Stack
 from util import Queue
+from util import PriorityQueue
 
 class SearchProblem:
     """
@@ -120,12 +121,10 @@ def depthFirstSearch(problem):
             
     
 def recursiveDFS(problem, start, direction, explored, path):
-    print "current: ", start
     explored.append(start)
     if (problem.getStartState() != start):
         path = path + [direction]
     if (problem.isGoalState(start)):
-        print "Found goal!"
         return path
     reverseList = list()
     for child in problem.getSuccessors(start):
@@ -190,13 +189,14 @@ def breadthFirstSearch(problem):
     frontier.push(problem.getStartState())
     while (not frontier.isEmpty()):
         state = frontier.pop()
-        print "Current state: ", state
+        #print "Current state: ", state
         explored.append(state)
         if (problem.isGoalState(state)):
-            print "Found..."
+            #print "Found..."
             path = backtracking(problem, state, parentChild)
             return path
         for successor in problem.getSuccessors(state):
+            #print "Successor: ", successor
             if (not successor[0] in explored):
                 parentChild.append((state, successor[1], successor[0]))
                
@@ -206,7 +206,7 @@ def breadthFirstSearch(problem):
     #util.raiseNotDefined()
     
 def backtracking(problem, goal, parentChild):
-    print "Backtracking..."
+    #print "Backtracking..."
     path = list()
     parentL = list()
     childL = list()
@@ -214,11 +214,11 @@ def backtracking(problem, goal, parentChild):
     parentL = [x[0] for x in parentChild]
     directionL = [x[1] for x in parentChild]
     childL = [x[2] for x in parentChild]
-    print parentL, len(parentL)
-    print directionL, len(directionL)
-    print childL, len(childL)
+    #print parentL, len(parentL)
+    #print directionL, len(directionL)
+    #print childL, len(childL)
 
-    print "Start: ", goal
+    #print "Start: ", goal
     child = goal
     while (child != problem.getStartState()):
         indexParent = childL.index(child)
@@ -226,7 +226,7 @@ def backtracking(problem, goal, parentChild):
         #print "Parent: ", parent
         path.insert(0, directionL[indexParent])
         if (parent == problem.getStartState()):
-            print "Path: ", path
+            #print "Path: ", path
             return path
         indexChild = childL.index(parent)
         child = childL[indexChild]
@@ -237,7 +237,36 @@ def backtracking(problem, goal, parentChild):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    path = list()
+    distance = list()
+    frontier = PriorityQueue()
+    start = prolem.getStartState()
+    cost = 0
+    frontier.push(start)
+    explored = list()
+
+    if frontier.isEmpty(): return
+    node = frontier.pop()
+    if problem.isGoalState(node):
+        return
+    explored.push(node)
+    for neighbor in problem.getSuccessors(node):
+        if not neighbor[0] in explored:
+            if not neighbor in frontier:
+                frontier.push(neighbor)
+            else if neighbor in frontier
+     
+
+    
+    distance.insert(0, 0)
+
+
+
+
+    
+    return breadthFirstSearch(problem)
+    
+    #util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
