@@ -120,57 +120,6 @@ def depthFirstSearch(problem):
     return path
             
     
-def recursiveDFS(problem, start, direction, explored, path):
-    explored.append(start)
-    if (problem.getStartState() != start):
-        path = path + [direction]
-    if (problem.isGoalState(start)):
-        return path
-    reverseList = list()
-    for child in problem.getSuccessors(start):
-        if not child[0] in explored:
-            reverseList.insert(0, child) 
-    for element in reverseList:
-        new = recursiveDFS(problem, element[0], element[1], explored, path)            
-        if new:
-            return new
-    return None        
-                
-##        while (not stack.isEmpty()):
-##            #print "Path: ", path
-##            next = stack.pop()
-##            path.append(next[1])
-##            print "Path:", path
-##                  
-####            if len(problem.getSuccessors(next[0])) != 0:
-####                path.append(next[1])
-####                print "new path: ", next[1]
-##        
-##
-##            counter = counter + 1
-##
-##            print "next: ", next
-##            print "Explored:", explored
-##            if next[0] in explored:
-##                print "has: ", next
-##                "path.append(next[1])"
-##                "path.pop()"
-##                
-##            else:
-##                explored.append(next[0])
-##                
-##                "print ""Explored set: "", explored"
-##                for next1 in problem.getSuccessors(next[0]):
-##                    stack.push(next1)
-##                    print "successors of: ", next1
-##                    if len(problem.getSuccessors(next1[0])) == 0:
-##                        print "no successors for: ", next1
-##                        stack.pop()
-##                        path.pop()
-##                                  
-
-    
-    #util.raiseNotDefined()
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -237,36 +186,59 @@ def backtracking(problem, goal, parentChild):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+##    path = list()
+##    distance = list()
+##    frontier = PriorityQueue()
+##    start = prolem.getStartState()
+##    cost = 0
+##    frontier.push(start)
+##    explored = list()
+##
+##    if frontier.isEmpty(): return
+##    node = frontier.pop()
+##    if problem.isGoalState(node):
+##        return
+##    explored.push(node)
+##    for neighbor in problem.getSuccessors(node):
+##        if not neighbor[0] in explored:
+##            if not neighbor in frontier:
+##                frontier.push(neighbor)
+##            else if neighbor in frontier:
+##                
+##     
+##
+##    
+##    distance.insert(0, 0)
+
+    
     path = list()
-    distance = list()
-    frontier = PriorityQueue()
-    start = prolem.getStartState()
-    cost = 0
-    frontier.push(start)
+    parentChild = list()
+    print "Problem: ", problem
+    print "Start:", problem.getStartState()
+    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+
+    if problem.isGoalState(problem.getStartState()):
+        return None
     explored = list()
-
-    if frontier.isEmpty(): return
-    node = frontier.pop()
-    if problem.isGoalState(node):
-        return
-    explored.push(node)
-    for neighbor in problem.getSuccessors(node):
-        if not neighbor[0] in explored:
-            if not neighbor in frontier:
-                frontier.push(neighbor)
-            else if neighbor in frontier
-     
-
-    
-    distance.insert(0, 0)
-
-
-
-
-    
-    return breadthFirstSearch(problem)
-    
-    #util.raiseNotDefined()
+    frontier = PriorityQueue()
+    #tuple = (problem.getStartState(), float("inf"))
+    frontier.push(problem.getStartState(), float("inf"))
+    while(not frontier.isEmpty()):
+        state = frontier.pop()      #state = [(x, y), cost]
+        explored.append(state)
+        if (problem.isGoalState(state)):
+            #print "Found..."
+            path = backtracking(problem, state, parentChild)
+            return path
+        for successor in problem.getSuccessors(state):
+            
+            #print "Successor: ", successor
+            if (not successor[0] in explored):
+                cost = successor[2] + state[1]
+                parentChild.append((state, successor[1], successor[0]))
+                frontier.push(successor[0], cost)
+    return None
 
 def nullHeuristic(state, problem=None):
     """
@@ -274,11 +246,42 @@ def nullHeuristic(state, problem=None):
     goal in the provided SearchProblem.  This heuristic is trivial.
     """
     return 0
+def myHeuristic(state, problem):
+    return 1
 
-def aStarSearch(problem, heuristic=nullHeuristic):
+def aStarSearch(problem, heuristic=myHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+##    path = list()
+##    parentChild = list()
+##    print "Problem: ", problem
+##    print "Start:", problem.getStartState()
+##    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+##    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+##
+##    if problem.isGoalState(problem.getStartState()):
+##        return None
+##    explored = list()
+##    frontier = PriorityQueue()
+##    #tuple = (problem.getStartState(), float("inf"))
+##    frontier.push(problem.getStartState(), float("inf"))
+##    while(not frontier.isEmpty()):
+##        state = frontier.pop()      #state = [(x, y), cost]
+##        explored.append(state)
+##        if (problem.isGoalState(state)):
+##            #print "Found..."
+##            path = backtracking(problem, state, parentChild)
+##            return path
+##        for successor in problem.getSuccessors(state):
+##            
+##            #print "Successor: ", successor
+##            if (not successor[0] in explored):
+##                cost = successor[2] + state[1]    #cost = stepCost +currentNodeCost
+##                parentChild.append((state, successor[1], successor[0]))
+##                frontier.push(successor[0], cost)
+##    return None
+
+    #util.raiseNotDefined()
 
     
 
