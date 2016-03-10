@@ -107,7 +107,7 @@ class SearchAgent(Agent):
         should compute the path to the goal and store it in a local variable.
         All of the work is done in this method!
 
-        state: a GameState object (pacman.py)
+        state: a GameState object (pacm an.py)
         """
         if self.searchFunction == None: raise Exception, "No search function provided for SearchAgent"
         starttime = time.time()
@@ -288,6 +288,10 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        self.reached = list()
+        self.state = (self.startingPosition, self.reached)
+
+        
 
     def getStartState(self):
         """
@@ -295,14 +299,28 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return self.state
+        
 
     def isGoalState(self, state):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        print("current state: ", state)
+        
+        print ("Reached: ", state[1])
+##        if state in self.corners and state not in self.reached:
+##            self.reached.append(state)
+##            print("Node pushed: ",self.reached)
+##            if (len(self.reached) != len(self.corners)):
+##                print("False")
+##                return False
+        for corner in self.corners:
+            if corner not in state[1]:
+                return False
+        return True
+        #util.raiseNotDefined()
 
     def getSuccessors(self, state):
         """
@@ -314,8 +332,13 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
+        costFn = lambda x: 1
         successors = []
+        cornersLeft = list()
+        for corner in self.corners:
+            if corner not in cornersLeft:
+                cornersLeft.append(corner)
+                
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -325,7 +348,19 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
-
+            x,y = state[0]
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            if not self.walls[nextx][nexty]:
+                newCorners = list()
+                for corner in cornersLeft:
+                    newCorners.append(corner)
+                    if (nextx, nexty) in newCorners:
+                        newCorners.remove((nextx, nexty))
+                        nextState = ((nextx, nexty), newCorners)
+                        cost = costFn(nextState) + cornerHeuristic(state[0], problem)
+                        successors.append( ( nextState, action, cost) )
+                        print("Successor: ",( nextState, action, cost))
         self._expanded += 1 # DO NOT CHANGE
         return successors
 
@@ -518,7 +553,7 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         The state is Pacman's position. Fill this in with a goal test that will
         complete the problem definition.
         """
-        x,y = state
+        
 
         "*** YOUR CODE HERE ***"
         util.raiseNotDefined()

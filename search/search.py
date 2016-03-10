@@ -95,31 +95,33 @@ def depthFirstSearch(problem):
     W = Directions.WEST
     E = Directions.EAST
     N = Directions.NORTH
-
-    directions = list()
-    directions.append(S)
-    directions.append(W)
-    directions.append(E)
-    directions.append(N)
-
-    
-    print problem
+           
+    path = list()
+    parentChild = list()
+    print "Problem: ", problem
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
-    print "Directions: ", directions
-    stack = Stack()
-    pathQueue = Queue()
+
+    if problem.isGoalState(problem.getStartState()):
+        return None
     explored = list()
-    path = list()
-    localPath = list()
-    result = list()
-    counter = 0
-    parentChildMap = list()        
-    path = recursiveDFS(problem, problem.getStartState(), None, explored, path)
-    return path
-            
-    
+    frontier = Stack()
+    frontier.push(problem.getStartState())
+    while (not frontier.isEmpty()):
+        state = frontier.pop()
+        #print "Current state: ", state
+        explored.append(state)
+        if (problem.isGoalState(state)):
+            #print "Found..."
+            path = backtracking(problem, state, parentChild)
+            return path
+        for successor in problem.getSuccessors(state):
+            #print "Successor: ", successor
+            if (not successor[0] in explored):
+                parentChild.append((state, successor[1], successor[0]))
+                frontier.push(successor[0])
+    return None
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
@@ -186,31 +188,6 @@ def backtracking(problem, goal, parentChild):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
-##    path = list()
-##    distance = list()
-##    frontier = PriorityQueue()
-##    start = prolem.getStartState()
-##    cost = 0
-##    frontier.push(start)
-##    explored = list()
-##
-##    if frontier.isEmpty(): return
-##    node = frontier.pop()
-##    if problem.isGoalState(node):
-##        return
-##    explored.push(node)
-##    for neighbor in problem.getSuccessors(node):
-##        if not neighbor[0] in explored:
-##            if not neighbor in frontier:
-##                frontier.push(neighbor)
-##            else if neighbor in frontier:
-##                
-##     
-##
-##    
-##    distance.insert(0, 0)
-
-    
     path = list()
     parentChild = list()
     print "Problem: ", problem
@@ -247,43 +224,54 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 def myHeuristic(state, problem):
-    return 1
+    """
+    Actually a manhattan heuristic and euclid heuristic copied from searchAgents.py
+    Layout: bigMaze - manhattanHeuristic 481 nodes expanded
+            bigMaze - Euclidean heuristic 485 nodes expanded
+    """
+    xy1 = state
+    xy2 = problem.goal
+    return abs(xy1[0] - xy2[0]) + abs(xy1[1] - xy2[1])
+##    xy1 = state
+##    xy2 = problem.goal
+##    return ( (xy1[0] - xy2[0]) ** 2 + (xy1[1] - xy2[1]) ** 2 ) ** 0.5
 
-def aStarSearch(problem, heuristic=myHeuristic):
+def aStarSearch(problem, heuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
-##    path = list()
-##    parentChild = list()
-##    print "Problem: ", problem
-##    print "Start:", problem.getStartState()
-##    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-##    print "Start's successors:", problem.getSuccessors(problem.getStartState())
-##
-##    if problem.isGoalState(problem.getStartState()):
-##        return None
-##    explored = list()
-##    frontier = PriorityQueue()
-##    #tuple = (problem.getStartState(), float("inf"))
-##    frontier.push(problem.getStartState(), float("inf"))
-##    while(not frontier.isEmpty()):
-##        state = frontier.pop()      #state = [(x, y), cost]
-##        explored.append(state)
-##        if (problem.isGoalState(state)):
-##            #print "Found..."
-##            path = backtracking(problem, state, parentChild)
-##            return path
-##        for successor in problem.getSuccessors(state):
-##            
-##            #print "Successor: ", successor
-##            if (not successor[0] in explored):
-##                cost = successor[2] + state[1]    #cost = stepCost +currentNodeCost
-##                parentChild.append((state, successor[1], successor[0]))
-##                frontier.push(successor[0], cost)
-##    return None
+
+    """
+    Only A* can find dots in openMaze. Path looks like a staircase.
+    """
+    path = list()
+    parentChild = list()
+    print "Problem: ", problem
+    print "Start:", problem.getStartState()
+    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    if problem.isGoalState(problem.getStartState()):
+        return None
+    explored = list()
+    frontier = PriorityQueue()
+    #tuple = (problem.getStartState(), float("inf"))
+    frontier.push(problem.getStartState(), float("inf"))
+    while(not frontier.isEmpty()):
+        state = frontier.pop()      #state = [(x, y), cost]
+        explored.append(state)
+        if (problem.isGoalState(state)):
+            #print "Found..."
+            path = backtracking(problem, state, parentChild)
+            return path
+        for successor in problem.getSuccessors(state):
+            #print "Successor: ", successor
+            if (not successor[0] in explored):
+                #print("State[1] ", state[1])
+                cost = successor[2] + heuristic(state, problem) #cost = stepCost +currentNodeCost
+                parentChild.append((state, successor[1], successor[0]))
+                frontier.push(successor[0], cost)
+    return None
 
     #util.raiseNotDefined()
-
-    
 
 # Abbreviations
 bfs = breadthFirstSearch
