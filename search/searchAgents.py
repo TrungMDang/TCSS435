@@ -320,12 +320,15 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
+        from itertools import chain
         costFn = lambda x: 1
         successors = []
         cornersLeft = list()
         for corner in state[1]:
-            if corner not in cornersLeft:
-                cornersLeft.append(corner)
+            cornersLeft.append(corner)
+       
+        #print("***********************************************")
+        
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
             # Here's a code snippet for figuring out whether a new position hits a wall:
@@ -336,22 +339,29 @@ class CornersProblem(search.SearchProblem):
 
             "*** YOUR CODE HERE ***"
             """Can't find solution for mediumCorners"""
-            x,y = state[0]
-            dx, dy = Actions.directionToVector(action)
-            nextx, nexty = int(x + dx), int(y + dy)
+            if len(cornersLeft) != 0:
+                x,y = state[0]
+                dx, dy = Actions.directionToVector(action)
+                nextx, nexty = int(x + dx), int(y + dy)
+            #print("Current state: ", (x, y))
+            
+            #print((nextx, nexty))
             if not self.walls[nextx][nexty]:
-                newCorners = []
-                for corner in cornersLeft:
-                    newCorners.append(corner)
-                if (nextx, nexty) in newCorners:
-                    newCorners.remove((nextx, nexty))
+                newCorners = list()
+                #if (nextx, nexty) in self.corners:
+                if (nextx, nexty) not in newCorners and (nextx, nexty) in cornersLeft:
+                    newCorners.append((nextx, nexty))
+                    
+                #print("new corners: ", newCorners)
                 nextState = ((nextx, nexty), newCorners)
                 cost = costFn(nextState[0]) + cornersHeuristic(state[0], self)
                 successors.append( ( ((nextx, nexty), newCorners), action, cost) )
 
         self._expanded += 1 # DO NOT CHANGE
+        #print("successors: ", successors)
         return successors
-def getCostOfActions(self, actions):
+    
+    def getCostOfActions(self, actions):
         """
         Returns the cost of a particular sequence of actions.  If those actions
         include an illegal move, return 999999.  This is implemented for you.
@@ -363,7 +373,6 @@ def getCostOfActions(self, actions):
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]: return 999999
         return len(actions)
-
 
 def cornersHeuristic(state, problem):
     """
@@ -382,6 +391,8 @@ def cornersHeuristic(state, problem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+
+    
     return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
